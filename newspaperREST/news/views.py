@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 
 
 @api_view(['GET', 'POST'])
-def list_create_articles(request):
+def list_create_articles(request, format=None):
     if request.method == 'GET':
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
@@ -22,8 +22,8 @@ def list_create_articles(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
-def article_detail(request, articleId):
+@api_view(['GET', 'PUT', 'DELETE'])
+def article_detail(request, articleId, format=None):
     # try:
     #     article = Article.objects.get(id=articleId)
     # except Article.DoesNotExist:
@@ -33,10 +33,13 @@ def article_detail(request, articleId):
     if request.method == 'GET':
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
-    else:
+    elif request.method == 'PUT':
         serializer = ArticleSerializer(data=request.data, instance=article)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        article.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
