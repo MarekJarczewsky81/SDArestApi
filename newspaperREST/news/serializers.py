@@ -1,5 +1,5 @@
 from .models import Article
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, EmailField
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, EmailField, StringRelatedField, HyperlinkedRelatedField
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -8,14 +8,19 @@ from rest_framework.validators import UniqueValidator
 
 
 class ArticleSerializer(ModelSerializer):
+
     class Meta:
         model = Article
         fields = ('id', 'title', 'text', 'owner', 'date')
+        read_only_fields = ('owner',)
 
 
 class UserSerializer(ModelSerializer):
-    articles = PrimaryKeyRelatedField(
-        queryset=Article.objects.all(), many=True)
+    # articles = PrimaryKeyRelatedField(
+    #     queryset=Article.objects.all(), many=True)
+    #articles = StringRelatedField(many=True)
+    articles = HyperlinkedRelatedField(
+        view_name='detail', queryset=Article.objects.all(), many=True)
 
     email = EmailField(
         required=False,
