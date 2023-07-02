@@ -32,6 +32,7 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password', 'articles')
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         username = validated_data.get('username')
@@ -45,7 +46,7 @@ class UserSerializer(ModelSerializer):
         user = User.objects.create_user(username, email, password)
 
         return user
-    
+
     # username wolny - ModelField (IntegrityError)✅
     # walidacja maila - ModelField (ValidationError)✅
     # email wolny (unikatowy) - SerializerField (my)✅
