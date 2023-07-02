@@ -10,6 +10,7 @@ from .serializers import UserSerializer
 from rest_framework import permissions
 from .permissions import IsOwnerOrReadOnly
 from .paginators import ArticlePaginator
+from rest_framework import filters
 
 # Create your views here.
 
@@ -18,6 +19,8 @@ class ListCreateArticles(generics.ListCreateAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     pagination_class = ArticlePaginator
+    filter_backends = [filters.OrderingFilter]
+    ordering = ['-date']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
