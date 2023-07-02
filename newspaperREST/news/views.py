@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from rest_framework import permissions
 from .permissions import IsOwnerOrReadOnly
+from .paginators import ArticlePaginator
 
 # Create your views here.
 
@@ -16,6 +17,7 @@ from .permissions import IsOwnerOrReadOnly
 class ListCreateArticles(generics.ListCreateAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    pagination_class = ArticlePaginator
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
