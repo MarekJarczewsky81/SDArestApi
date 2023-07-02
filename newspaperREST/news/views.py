@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from rest_framework import permissions
+from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
@@ -18,6 +19,7 @@ class ListCreateArticles(generics.ListCreateAPIView):
 
 
 class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsOwnerOrReadOnly]
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 
